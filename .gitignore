@@ -1,0 +1,11 @@
+*.suo
+*.tlog
+*.log
+*.ipch
+*.db
+IF_MDL.VC.VC.opendb
+*.pch
+*.obj
+*.sdf
+IF_MDL_i.h
+IF_MDL_i.c

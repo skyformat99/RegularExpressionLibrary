@@ -1,0 +1,208 @@
+// IF_MDL.idl : IF_MDL の IDL ソース
+//
+
+// このファイルは、タイプ ライブラリ (IF_MDL.tlb) およびマーシャリング コードを
+// 作成するために MIDL ツールによって処理されます。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(01307b0c-e855-435c-9eed-8430a0813c77)
+]
+struct TRegExpMemoryParam
+{
+	ULONG DataOffset;
+	ULONG DataLength;
+	ULONG DataGap;
+};
+
+[
+	uuid(01301d71-177f-43ed-b24b-4d1d8a7579e5)
+]
+struct TRegExpMemoryObject
+{
+	[size_is(MemorySize), length_is(MemorySize)] CHAR* Memory;
+	ULONG MemorySize;
+	ULONG DataOffset;
+	ULONG DataLength;
+	ULONG DataGap;
+};
+
+[
+	uuid(013022d7-b3cb-494e-9782-6c1ce29bffff)
+]
+struct TRegExpFindMemory
+{
+	[size_is(MemorySize), length_is(MemorySize)] CHAR* Memory;
+	ULONG MemorySize;
+	ULONG DataOffset;
+	ULONG DataLength;
+	ULONG DataGap;
+	ULONG StartIndex;
+	VARIANT_BOOL LoopTop;
+};
+
+[
+	uuid(0130234d-cc81-4e53-bcd2-79c6d4eb9d79)
+]
+typedef enum TRegExpOption
+{
+	optNone = 0,
+	optM = 1,
+	optS = 2,
+	optI = 4,
+	optX = 8,
+	optNotM = optS | optI | optX,
+	optNotS = optM | optI | optX,
+	optNotI = optS | optM | optX,
+	optNotX = optS | optI | optM,
+} TRegExpOption;
+
+[
+	uuid(01307973-bf62-4c54-89e9-e28d72835c08)
+]
+typedef enum TRegExpMemorySize
+{
+	msCustom,
+	msSingleByte,
+	msDoubleByte,
+	msQuadrupleByte,
+	msOctupleByte,
+} TRegExpMemorySize;
+
+[
+	uuid(01307b5f-b39e-4879-8e27-5c123b8015a8)
+]
+typedef enum TRegVenderLocalMemoryType
+{
+	lmtCtrl,
+	lmtWord,
+	lmtSpace,
+	lmtBlanc,
+	lmtUpper,
+	lmtLower,
+	lmtAlpha,
+	lmtAlnum,
+} TRegVenderLocalMemoryType;
+
+[
+	object,
+	uuid(013034f1-b76d-4c73-811d-889f8888c052/*93880FC9-6203-4FD7-A1A6-7B6D5A45B432*/),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IIFRegVender : IDispatch{
+	[propget, id(1)] HRESULT MemorySize([out, retval] TRegExpMemorySize* pVal);
+	[propput, id(1)] HRESULT MemorySize([in] TRegExpMemorySize newVal);
+	[id(2)] HRESULT SetMemoryParam([in, size_is(MemorySize), length_is(MemorySize)] CHAR* Memory, [in] ULONG MemorySize, [in] ULONG DataOffset, [in] ULONG DataLength, [in] ULONG DataGap);
+	[id(3)] HRESULT SetLocalMemoryParam([in] TRegVenderLocalMemoryType Type, [in, size_is(MemorySize), length_is(MemorySize)] CHAR* Memory, [in] ULONG MemorySize, [in] ULONG DataOffset, [in] ULONG DataLength, [in] ULONG DataGap);
+};
+
+[
+	object,
+	uuid(0130163c-8992-4ab6-b98c-b0e24675c2a7/*9CC03520-DBDE-413C-8CDC-AF9D19634823*/),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IIFRegExp : IDispatch{
+	[propget, id(1), bindable, displaybind] HRESULT Pattern([out, retval] BSTR* pVal);
+	[propput, id(1), bindable, displaybind] HRESULT Pattern([in] BSTR newVal);
+	[propget, id(2), bindable, displaybind] HRESULT RegOption([out, retval] TRegExpOption* pVal);
+	[propput, id(2), bindable, displaybind] HRESULT RegOption([in] TRegExpOption newVal);
+	[propget, id(3)] HRESULT Vender([out, retval] IIFRegVender** pVal);
+	[id(4)] HRESULT Match([in] BSTR Value, [in] LONG Index, [out, retval] LONG* retVal);
+	[id(5)] HRESULT RunMatchData([in, size_is(MemorySize), length_is(MemorySize)] CHAR* Memory, [in] ULONG MemorySize, [in] ULONG DataOffset, [in] ULONG DataLength, [in] ULONG DataGap, [in, out] LONG* Index, [out, retval] VARIANT_BOOL* retVal);
+	[id(6)] HRESULT Find([in] BSTR Value, [in, defaultvalue(0)] LONG Index, [in, defaultvalue(-1)] VARIANT_BOOL LoopFirst);
+	[id(7)] HRESULT RunFindData([in, size_is(MemorySize), length_is(MemorySize)] CHAR* Memory, [in] ULONG MemorySize, [in] ULONG DataOffset, [in] ULONG DataLength, [in] ULONG DataGap, [in, defaultvalue(0)] LONG Index, [in, defaultvalue(-1)] VARIANT_BOOL LoopFirst);
+	[id(8)] HRESULT MatchPosition([in] LONG Index, [out, retval] LONG* position);
+	[id(9)] HRESULT MatchLength([in] LONG Index, [out, retval] LONG* length);
+	[id(10)] HRESULT SetPatternData([in, size_is(MemorySize), length_is(MemorySize)] CHAR* Memory, [in] ULONG MemorySize, [in] ULONG DataOffset, [in] ULONG DataLength, [in] ULONG DataGap);
+	[propget, id(11), displaybind] HRESULT ParserString([out, retval] BSTR* pVal);
+	[propget, id(12), displaybind] HRESULT PatternString([out, retval] BSTR* pVal);
+	[id(13)] HRESULT rtf_text([in] BSTR rtf, [in] ULONG size, [out, retval] BSTR* text);
+};
+
+[
+	uuid(01300165-c3cb-4c51-8261-fb6c23a4b921/*A4430F25-5F19-4247-81F5-F87B2F341516*/),
+	version(1.0),
+]
+library IF_MDLLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(01301720-7436-4f4f-ab7c-c333824c725d/*9A0E038F-6579-403A-BC31-69E7982AC8B7*/)		
+	]
+	dispinterface _IIFRegExpEvents
+	{
+		properties:
+		methods:
+			[id(1), helpstring("method OnSwitchQuery")] HRESULT OnSwitchQuery([in] IUnknown* Sender, [in] LONG Param, [in, out] SHORT* CaseIndex);
+			[id(2), helpstring("method OnSelectFunc")] HRESULT OnSelectFunc([in] IUnknown* Sender, [in] LONG Param, [in] SHORT CaseIndex, [in] LONG CharIndex, [in] LONG CharCount);
+			[id(3), helpstring("method OnIfFunc")] HRESULT OnIfFunc([in] IUnknown* Sender, [in] LONG Param, [in] VARIANT_BOOL Success, [in] LONG CharIndex, [in] LONG CharCount);
+			[id(4), helpstring("method OnActionFunc")] HRESULT OnActionFunc([in] IUnknown* Sender, [in] LONG Param, [in] LONG CharIndex, [in] LONG CharCount);
+			[id(5), helpstring("method OnForInitializeFunc")] HRESULT OnForInitializeFunc([in] IUnknown* Sender, [in] LONG Param, [in] LONG CharIndex);
+			[id(6), helpstring("method OnForReinitializeFunc")] HRESULT OnForReinitializeFunc([in] IUnknown* Sender, [in] LONG Param, [in] LONG CharIndex);
+			[id(7), helpstring("method OnQueryFunc")] HRESULT OnQueryFunc([in] IUnknown* Sender, [in] LONG Param, [in, out] LONG* CharIndex, [in] LONG LastIndex, [in, out] VARIANT_BOOL* Success);
+			[id(8), helpstring("method OnCallFunc")] HRESULT OnCallFunc([in] IUnknown* Sender, [in] LONG Param);
+			[id(9), helpstring("method OnMatch")] HRESULT OnMatch([in] IUnknown* Sender, [in] LONG Begin, [in] LONG End, [in, out] VARIANT_BOOL* Next);
+	};
+	[
+		uuid(01300401-d683-4988-af80-d4b32a51de54/*EEAFF398-CB57-4F7D-8058-1ED7C27654D8*/)		
+	]
+	coclass IFRegExp
+	{
+		[default] interface IIFRegExp;
+		[default, source] dispinterface _IIFRegExpEvents;
+	};
+	[
+		uuid(01304cca-33a1-4ab4-9e3a-aa03346a0d9e/*19B40D83-4F82-490C-A97D-5000AFAAEA3C*/)
+	]
+	dispinterface _IIFRegVenderEvents
+	{
+		properties:
+		methods:
+			[id(1), helpstring("method OnChange")] HRESULT OnChange();
+	};
+	[
+		uuid(01304e68-77ed-41c0-980d-c1ad6528bb73/*18D43795-1AD6-4A0B-A543-3F4F4CE6112B*/)
+	]
+	coclass IFRegVender
+	{
+		[default] interface IIFRegVender;
+		[default, source] dispinterface _IIFRegVenderEvents;
+	};
+};
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//0130b728-7eed-4eea-9009-156191cdfb19
+//0130b891-dc5a-41cb-b01d-53de670a9d8c
+//0130be87-73fc-4b4b-a93f-9d9ac03fd977
+//0130c17d-21ad-46d6-866b-25032ec97c27
+//0130c23b-83b3-47d5-b5df-f67626b59cbc
+//0130d168-3ef7-48d6-9504-b46106b3fec0
+//0130d372-0c64-41d2-b6ff-5c2516174e2a
+//0130f16e-5da9-41df-8cbf-7be321281eab
+//0130f614-544b-4452-b5fa-49498e3ad8d3
+//0130f9c0-8162-4ad5-bbcd-11fabdc3727e
+//

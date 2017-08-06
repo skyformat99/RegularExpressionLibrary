@@ -1,0 +1,26 @@
+HKCR
+{
+	IF_MDL.IFRegExp.1 = s 'IFRegExp Class'
+	{
+		CLSID = s '{01300401-d683-4988-af80-d4b32a51de54}'
+	}
+	IF_MDL.IFRegExp = s 'IFRegExp Class'
+	{		
+		CurVer = s 'IF_MDL.IFRegExp.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {01300401-d683-4988-af80-d4b32a51de54} = s 'IFRegExp Class'
+		{
+			ProgID = s 'IF_MDL.IFRegExp.1'
+			VersionIndependentProgID = s 'IF_MDL.IFRegExp'
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{01300165-c3cb-4c51-8261-fb6c23a4b921}'
+			Version = s '1.0'
+		}
+	}
+}
